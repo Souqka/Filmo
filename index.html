@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Слот-машина фильмов — случайный выбор фильма или сериала из вашего списка">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Filmo">
+    <title>Слот-машина фильмов</title>
+    <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="./assets/icon-192.png">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://image.tmdb.org">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@700;900&display=swap">
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <a class="skip-link" href="#main">Перейти к содержимому</a>
+
+    <div class="app-bg" aria-hidden="true"></div>
+
+    <header class="app-header">
+        <div class="header-inner">
+            <h1 class="app-title">
+                <span class="app-title-icon" aria-hidden="true">🎰</span>
+                <span>Слот-машина фильмов</span>
+            </h1>
+            <button
+                type="button"
+                class="icon-btn"
+                id="settingsBtn"
+                aria-haspopup="dialog"
+                aria-controls="settingsDialog"
+                aria-label="Открыть настройки">
+                ⚙️
+            </button>
+        </div>
+    </header>
+
+    <main id="main" class="app-main">
+        <!-- Поиск -->
+        <section class="panel search-section" aria-labelledby="searchHeading">
+            <h2 id="searchHeading" class="visually-hidden">Поиск фильмов</h2>
+            <div class="search-box">
+                <label for="searchInput" class="visually-hidden">Найти фильм или сериал</label>
+                <span class="search-icon" aria-hidden="true">🔍</span>
+                <input
+                    type="search"
+                    id="searchInput"
+                    class="search-input"
+                    placeholder="Найдите фильм или сериал…"
+                    autocomplete="off"
+                    spellcheck="false"
+                    role="combobox"
+                    aria-autocomplete="list"
+                    aria-expanded="false"
+                    aria-controls="searchResults"
+                    aria-haspopup="listbox">
+                <span class="search-spinner hidden" id="searchSpinner" aria-hidden="true"></span>
+            </div>
+            <ul
+                id="searchResults"
+                class="search-results hidden"
+                role="listbox"
+                aria-label="Результаты поиска"></ul>
+            <p class="search-hint" id="searchStatus" role="status" aria-live="polite"></p>
+        </section>
+
+        <!-- Список фильмов -->
+        <section class="panel list-section" aria-labelledby="listHeading">
+            <div class="list-header">
+                <h2 id="listHeading" class="section-title">
+                    Мой список
+                    <span class="counter" id="movieCount" aria-live="polite">0</span>
+                </h2>
+                <div class="list-actions">
+                    <button type="button" class="btn btn-ghost" id="shuffleBtn">
+                        Перемешать
+                    </button>
+                    <button type="button" class="btn btn-ghost btn-danger" id="clearBtn">
+                        Очистить список
+                    </button>
+                </div>
+            </div>
+            <div id="movieChips" class="movie-chips" role="list" aria-label="Добавленные фильмы"></div>
+            <p class="empty-hint" id="listEmptyHint">Список пуст. Найдите фильм через поиск и добавьте его в барабан.</p>
+        </section>
+
+        <!-- Слот-барабан -->
+        <section class="slot-section" aria-labelledby="slotHeading">
+            <h2 id="slotHeading" class="visually-hidden">Слот-барабан</h2>
+
+            <div class="slot-machine" id="slotMachine">
+                <div class="slot-crown">✦ JACKPOT ✦</div>
+                <div class="slot-frame" id="slotFrame">
+                    <div class="slot-lights slot-lights-top" aria-hidden="true"></div>
+                    <div class="slot-body">
+                        <div class="slot-side-lamp left" aria-hidden="true"></div>
+                        <div class="slot-window" id="slotWindow">
+                            <div class="slot-glass" aria-hidden="true"></div>
+                            <div class="slot-reel" id="slotReel"></div>
+                        </div>
+                        <div class="slot-side-lamp right" aria-hidden="true"></div>
+                    </div>
+                    <div class="slot-lights slot-lights-bottom" aria-hidden="true"></div>
+                    <div class="slot-lever" aria-hidden="true">
+                        <span class="lever-knob"></span>
+                        <span class="lever-arm"></span>
+                    </div>
+                </div>
+            </div>
+
+            <p class="slot-hint" id="spinHint" role="status"></p>
+
+            <button type="button" class="btn-spin" id="spinBtn">
+                <span class="btn-spin-label">Крутить барабан</span>
+            </button>
+        </section>
+
+        <!-- Результат -->
+        <section
+            class="result-section hidden"
+            id="resultSection"
+            aria-live="assertive"
+            aria-atomic="true">
+            <p class="result-label">Победитель</p>
+            <div class="result-card" id="resultCard">
+                <img id="winnerPoster" class="result-poster" alt="" width="90" height="120">
+                <div class="result-text">
+                    <h2 id="winnerTitle" class="result-title"></h2>
+                    <p id="winnerMeta" class="result-meta"></p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        <p>This product uses the TMDB API but is not endorsed or certified by <a href="https://www.themoviedb.org/" rel="noopener noreferrer" target="_blank">TMDB</a>.</p>
+    </footer>
+
+    <div class="toast-container" id="toastContainer" aria-live="polite" aria-relevant="additions"></div>
+
+    <!-- Настройки -->
+    <dialog class="dialog" id="settingsDialog" aria-labelledby="settingsTitle">
+        <form method="dialog" class="dialog-form">
+            <h2 id="settingsTitle" class="dialog-title">Настройки</h2>
+
+            <fieldset class="fieldset">
+                <legend>Скорость вращения</legend>
+                <label class="radio-row">
+                    <input type="radio" name="spinSpeed" value="fast">
+                    <span>Быстро</span>
+                </label>
+                <label class="radio-row">
+                    <input type="radio" name="spinSpeed" value="medium" checked>
+                    <span>Средне</span>
+                </label>
+                <label class="radio-row">
+                    <input type="radio" name="spinSpeed" value="slow">
+                    <span>Медленно</span>
+                </label>
+            </fieldset>
+
+            <label class="check-row">
+                <input type="checkbox" id="soundToggle" checked>
+                <span>Звук</span>
+            </label>
+
+            <div class="dialog-actions">
+                <button type="button" class="btn btn-danger" id="resetBtn">Сбросить все данные</button>
+                <button type="submit" class="btn btn-primary" value="close">Закрыть</button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- Редактирование названия -->
+    <dialog class="dialog" id="editDialog" aria-labelledby="editTitle">
+        <form method="dialog" class="dialog-form" id="editForm">
+            <h2 id="editTitle" class="dialog-title">Название фильма</h2>
+            <label for="editTitleInput" class="visually-hidden">Новое название</label>
+            <input type="text" id="editTitleInput" class="dialog-input" maxlength="200" required>
+            <div class="dialog-actions">
+                <button type="button" class="btn btn-ghost" id="editCancelBtn" value="cancel">Отмена</button>
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+            </div>
+        </form>
+    </dialog>
+
+    <noscript>
+        <p class="noscript">Для работы приложения нужен JavaScript.</p>
+    </noscript>
+
+    <script src="./config.js"></script>
+    <script src="./script.js"></script>
+</body>
+</html>
