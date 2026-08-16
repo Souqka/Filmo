@@ -3,7 +3,7 @@
  * Получите бесплатный API-ключ: https://www.themoviedb.org/settings/api
  */
 const CONFIG = {
-    TMDB_API_KEY: 'YOUR_API_KEY_HERE', // Замените на реальный ключ
+    TMDB_API_KEY: 'ccae270d5b43ed10d4f1f3c626c41cb6', // Замените на реальный ключ
     TMDB_BASE_URL: 'https://api.themoviedb.org/3',
     TMDB_IMAGE_BASE: 'https://image.tmdb.org/t/p/w500',
     TMDB_IMAGE_SMALL: 'https://image.tmdb.org/t/p/w92',
